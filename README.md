@@ -19,6 +19,8 @@ Base autenticada de `app.pinepet.com.br`, separada do site institucional.
 
 O serviço Nginx usa uma imagem própria e incorpora `public/` durante o build. Depois de alterar CSS, JavaScript ou imagens, faça um novo build; não reutilize apenas o contêiner antigo, pois os assets são imutáveis e versionados.
 
+O layout também incorpora CSS, JavaScript e logo na resposta HTML com nonce CSP. Assim, a interface funciona mesmo quando o proxy do provedor não encaminha caminhos estáticos.
+
 Em produção, mantenha `APP_ENV=production`, `SESSION_SECURE=true`, HTTPS obrigatório e configure `TRUSTED_PROXY_CIDRS` somente com as redes reais do proxy. O cookie não usa domínio compartilhado, isolando a sessão no subdomínio.
 
 ## Arquitetura

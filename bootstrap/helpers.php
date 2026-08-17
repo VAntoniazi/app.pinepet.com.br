@@ -16,7 +16,20 @@ function asset(string $path): string
 {
     $target = '/' . ltrim($path, '/');
     $file = BASE_PATH . '/public' . $target;
+    if ($target === '/assets/images/logo.svg' && is_file($file)) {
+        $contents = file_get_contents($file);
+        if (is_string($contents)) return 'data:image/svg+xml;base64,' . base64_encode($contents);
+    }
     return is_file($file) ? $target . '?v=' . substr(hash_file('sha256', $file), 0, 12) : $target;
+}
+function inline_asset(string $relativePath): string
+{
+    $allowed = ['assets/css/app.css', 'assets/js/app.js'];
+    $relativePath = ltrim(str_replace('\\', '/', $relativePath), '/');
+    if (!in_array($relativePath, $allowed, true)) throw new InvalidArgumentException('Asset inline não permitido.');
+    $contents = file_get_contents(BASE_PATH . '/public/' . $relativePath);
+    if (!is_string($contents)) throw new RuntimeException('Não foi possível carregar o asset da interface.');
+    return $contents;
 }
 function csrf_field(): string { return '<input type="hidden" name="_token" value="' . e(Csrf::token()) . '">'; }
 function flash(string $key, mixed $value): void { $_SESSION['_flash'][$key] = $value; }
