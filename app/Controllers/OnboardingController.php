@@ -22,7 +22,7 @@ final class OnboardingController
     {
         $user=Auth::requireUser(); if(!empty($user['profile_complete'])) Response::redirect('/painel');
         if(!Csrf::validate($request->input('_token'))) Response::abort(419);
-        $data=['name'=>preg_replace('/\s+/u',' ',trim((string)$request->input('name'))),'birth_date'=>trim((string)$request->input('birth_date')),'sex'=>trim((string)$request->input('sex')),'cpf'=>preg_replace('/\D/','',(string)$request->input('cpf')),'trade_name'=>preg_replace('/\s+/u',' ',trim((string)$request->input('trade_name'))),'cnpj'=>preg_replace('/\D/','',(string)$request->input('cnpj'))];
+        $data=['name'=>preg_replace('/\s+/u',' ',trim((string)$request->input('name'))),'birth_date'=>trim((string)$request->input('birth_date')),'sex'=>trim((string)$request->input('sex')),'cpf'=>preg_replace('/\D/','',(string)$request->input('cpf')),'trade_name'=>preg_replace('/\s+/u',' ',trim((string)$request->input('trade_name'))),'cnpj'=>preg_replace('/\D/','',(string)$request->input('cnpj')),'role'=>trim((string)$request->input('role')),'specialty'=>preg_replace('/\s+/u',' ',trim((string)$request->input('specialty'))),'auto_advance'=>$request->input('auto_advance')==='1','allow_skip'=>$request->input('allow_skip')==='1','notify_client'=>$request->input('notify_client')==='1'];
         $errors=$this->validate($data);
         if($errors!==[]){ flash('error',implode(' ',$errors)); flash('old',$data); Response::redirect('/primeiro-acesso'); }
         try { $this->profiles->complete((int)$user['user_id'],(int)$user['business_id'],$data); }
@@ -39,6 +39,8 @@ final class OnboardingController
         if(!$this->validDocument($data['cpf'],11)) $errors[]='Informe um CPF válido.';
         if(mb_strlen($data['trade_name'])<2||mb_strlen($data['trade_name'])>120) $errors[]='Informe o nome do estabelecimento.';
         if($data['cnpj']!==''&&!$this->validDocument($data['cnpj'],14)) $errors[]='Informe um CNPJ válido ou deixe o campo vazio.';
+        if(!in_array($data['role'],['Proprietário','Sócio','Gestor','Profissional'],true)) $errors[]='Selecione sua função no estabelecimento.';
+        if(mb_strlen($data['specialty'])>180) $errors[]='A especialidade deve ter no máximo 180 caracteres.';
         return $errors;
     }
     private function validDocument(string $value,int $length): bool

@@ -21,7 +21,7 @@ final class AuthRepository
     public function recordAttempt(string $emailHash,string $ipHash,bool $success,string $userAgent): void
     {
         $s=$this->database->pdo()->prepare('INSERT INTO sistema_login_tentativas(email_hash,ip_hash,sucesso,user_agent,created_at) VALUES(:email,:ip,:success,:agent,NOW())');
-        $s->execute(['email'=>$emailHash,'ip'=>$ipHash,'success'=>$success,'agent'=>$userAgent]);
+        $s->execute(['email'=>$emailHash,'ip'=>$ipHash,'success'=>$success?'true':'false','agent'=>$userAgent]);
     }
     public function updatePasswordHash(int $userId,string $passwordHash): void
     {
@@ -34,7 +34,7 @@ final class AuthRepository
             $s->execute(['hash'=>$tokenHash]); $user=$s->fetch(); if(!is_array($user)) return null;
             $pdo->prepare("UPDATE cadastro_usuarios SET senha=:password,status='ativo',updated_at=NOW(),version_lock=version_lock+1 WHERE id=:id")->execute(['password'=>$passwordHash,'id'=>$user['id']]);
             $pdo->prepare("UPDATE cadastro_temporarios SET ativacao_token_hash=NULL,ativacao_expira_em=NULL,status='senha_definida',updated_at=NOW() WHERE id=:id")->execute(['id'=>$user['draft_id']]);
-            $pdo->prepare("INSERT INTO cadastro_funil_eventos(cadastro_id,evento,etapa,metadata,created_at) VALUES(:password_id,'senha_definida',3,'{}'::jsonb,NOW()),(:access_id,'primeiro_acesso',3,'{}'::jsonb,NOW())")->execute(['password_id'=>$user['draft_id'],'access_id'=>$user['draft_id']]);
+            $pdo->prepare("INSERT INTO cadastro_funil_eventos(cadastro_id,evento,etapa,metadata,created_at) VALUES(:draft_id,'senha_definida',3,'{}'::jsonb,NOW())")->execute(['draft_id'=>$user['draft_id']]);
             unset($user['draft_id']); return $user;
         });
     }
