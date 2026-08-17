@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1024" height="1024" viewBox="0 0 1024 1024"
+     role="img" aria-labelledby="title desc">
+  <title id="title">Ícone PinePet</title>
+  <desc id="desc">Abacaxi geométrico verde integrado a uma pata de animal.</desc>
+
+  <defs>
+    <clipPath id="bodyClip">
+      <path d="M512 286
+               C664 286 748 380 780 505
+               C810 621 803 758 744 838
+               C690 911 334 911 280 838
+               C221 758 214 621 244 505
+               C276 380 360 286 512 286 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- Coroa: orelhas-folhas -->
+  <path fill="#035519"
+        d="M326 330
+           C286 292 259 226 263 164
+           C266 107 300 88 354 108
+           C414 130 461 193 484 274
+           C437 279 395 296 360 324
+           C349 305 347 286 357 265
+           C334 296 322 319 326 330 Z"/>
+
+  <path fill="#035519"
+        d="M698 330
+           C738 292 765 226 761 164
+           C758 107 724 88 670 108
+           C610 130 563 193 540 274
+           C587 279 629 296 664 324
+           C675 305 677 286 667 265
+           C690 296 702 319 698 330 Z"/>
+
+  <!-- Recortes internos que reforçam a leitura de orelha -->
+  <path d="M352 220 C337 255 322 278 301 295"
+        fill="none" stroke="#FFFFFF" stroke-width="18"
+        stroke-linecap="round"/>
+  <path d="M672 220 C687 255 702 278 723 295"
+        fill="none" stroke="#FFFFFF" stroke-width="18"
+        stroke-linecap="round"/>
+
+  <!-- Folha central -->
+  <path fill="#6CBC2C"
+        d="M481 286
+           C464 236 468 164 512 100
+           C556 164 560 236 543 286
+           C523 281 501 281 481 286 Z"/>
+
+  <!-- Corpo base -->
+  <path fill="#035519"
+        d="M512 286
+           C664 286 748 380 780 505
+           C810 621 803 758 744 838
+           C690 911 334 911 280 838
+           C221 758 214 621 244 505
+           C276 380 360 286 512 286 Z"/>
+
+  <!-- Áreas verde-claro do padrão do abacaxi -->
+  <g clip-path="url(#bodyClip)" fill="#6CBC2C">
+    <polygon points="210,415 365,290 514,439 365,588"/>
+    <polygon points="510,439 659,290 814,415 659,588"/>
+    <polygon points="208,650 365,520 518,673 365,826"/>
+    <polygon points="506,673 659,520 816,650 659,826"/>
+    <polygon points="225,850 365,730 493,858 405,946 285,920"/>
+    <polygon points="531,858 659,730 799,850 739,920 619,946"/>
+  </g>
+
+  <!-- Divisores brancos diagonais -->
+  <g clip-path="url(#bodyClip)"
+     fill="none" stroke="#FFFFFF" stroke-width="20"
+     stroke-linecap="round" stroke-linejoin="round">
+    <path d="M206 315 L807 916"/>
+    <path d="M157 515 L565 923"/>
+    <path d="M459 267 L838 646"/>
+    <path d="M818 315 L217 916"/>
+    <path d="M867 515 L459 923"/>
+    <path d="M565 267 L186 646"/>
+  </g>
+
+  <!-- Pata central -->
+  <g fill="#FFFFFF" stroke="#035519" stroke-width="3">
+    <ellipse cx="443" cy="657" rx="39" ry="56" transform="rotate(-12 443 657)"/>
+    <ellipse cx="493" cy="594" rx="36" ry="58" transform="rotate(-3 493 594)"/>
+    <ellipse cx="565" cy="594" rx="36" ry="58" transform="rotate(3 565 594)"/>
+    <ellipse cx="615" cy="657" rx="39" ry="56" transform="rotate(12 615 657)"/>
+    <path d="M512 666
+             C463 666 431 704 430 754
+             C430 786 449 811 481 811
+             C494 811 503 802 512 802
+             C521 802 530 811 543 811
+             C575 811 594 786 594 754
+             C593 704 561 666 512 666 Z"/>
+  </g>
+</svg>
