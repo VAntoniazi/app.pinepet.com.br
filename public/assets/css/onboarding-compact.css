@@ -1,0 +1,5 @@
+.onboarding-shell{max-width:760px}
+.onboarding-head h1{font-size:clamp(1.45rem,6vw,2.25rem);line-height:1.08;letter-spacing:-.04em}
+.onboarding-head p{max-width:620px;margin-top:.45rem;font-size:.88rem;line-height:1.5}
+.onboarding-form fieldset{padding:.9rem;border-radius:14px}
+.post-vaccine-field{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--line)}
