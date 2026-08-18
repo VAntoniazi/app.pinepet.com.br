@@ -10,25 +10,25 @@ final class ProfileRepository
     public function __construct(private readonly Database $database) {}
     public function data(int $userId): ?array
     {
-        $s=$this->database->pdo()->prepare('SELECT u.nome_completo,u.data_nascimento,u.sexo_biologico,u.cpf,u.numero_telefone_ddd,u.email,u.cadastro_completo_em,e.nome_fantasia,e.cnpj FROM cadastro_usuarios u JOIN cadastro_estabelecimentos e ON e.id=u.id_estabelecimento AND e.deleted_at IS NULL WHERE u.id=:id AND u.deleted_at IS NULL LIMIT 1');
+        $s=$this->database->pdo()->prepare('SELECT e.id AS id_estabelecimento,u.nome_completo,u.data_nascimento,u.sexo_biologico,u.cpf,u.numero_telefone_ddd,u.email,u.cadastro_completo_em,e.nome_fantasia,e.cnpj FROM acesso_usuarios u JOIN organizacao_estabelecimentos e ON e.id=u.id_estabelecimento AND e.deleted_at IS NULL WHERE u.id=:id AND u.deleted_at IS NULL LIMIT 1');
         $s->execute(['id'=>$userId]); $row=$s->fetch(); return is_array($row)?$row:null;
     }
     public function complete(int $userId,int $businessId,array $data): void
     {
         $this->database->transaction(function(PDO $pdo) use($userId,$businessId,$data): void {
-            $s=$pdo->prepare('UPDATE cadastro_usuarios SET nome_completo=:name,data_nascimento=:birth,sexo_biologico=:sex,cpf=:cpf,cadastro_completo_em=NOW(),updated_at=NOW(),version_lock=version_lock+1 WHERE id=:id AND id_estabelecimento=:business AND deleted_at IS NULL AND cadastro_completo_em IS NULL');
+            $s=$pdo->prepare('UPDATE acesso_usuarios SET nome_completo=:name,data_nascimento=:birth,sexo_biologico=:sex,cpf=:cpf,cadastro_completo_em=NOW(),updated_at=NOW(),version_lock=version_lock+1 WHERE id=:id AND id_estabelecimento=:business AND deleted_at IS NULL AND cadastro_completo_em IS NULL');
             $s->execute(['name'=>$data['name'],'birth'=>$data['birth_date'],'sex'=>$data['sex'],'cpf'=>$data['cpf'],'id'=>$userId,'business'=>$businessId]);
             if($s->rowCount()!==1) throw new \RuntimeException('Cadastro já concluído ou vínculo inválido.');
-            $pdo->prepare('UPDATE cadastro_estabelecimentos SET nome_fantasia=:trade_name,cnpj=:cnpj,updated_at=NOW() WHERE id=:id AND deleted_at IS NULL')->execute(['trade_name'=>$data['trade_name'],'cnpj'=>$data['cnpj']!==''?$data['cnpj']:null,'id'=>$businessId]);
+            $pdo->prepare('UPDATE organizacao_estabelecimentos SET nome_fantasia=:trade_name,cnpj=:cnpj,updated_at=NOW() WHERE id=:id AND deleted_at IS NULL')->execute(['trade_name'=>$data['trade_name'],'cnpj'=>$data['cnpj']!==''?$data['cnpj']:null,'id'=>$businessId]);
             [$firstName,$lastName]=$this->splitName($data['name']);
             $pdo->prepare(<<<'SQL'
-                INSERT INTO cadastro_profissionais
+                INSERT INTO equipe_profissionais
                     (id_estabelecimento,nome,sobrenome,cpf,data_nascimento,email,telefone,whatsapp_com_ddd,cargo,especialidade,ativo)
                 SELECT :business,:first_name,:last_name,:cpf,:birth,u.email,u.numero_telefone_ddd,u.numero_telefone_ddd,:role,:specialty,TRUE
-                  FROM cadastro_usuarios u
+                  FROM acesso_usuarios u
                  WHERE u.id=:user
                    AND NOT EXISTS (
-                       SELECT 1 FROM cadastro_profissionais p
+                       SELECT 1 FROM equipe_profissionais p
                         WHERE p.id_estabelecimento=:business_check AND p.cpf=:cpf_check
                    )
             SQL)->execute([
@@ -58,7 +58,13 @@ final class ProfileRepository
                     notificar_cliente=EXCLUDED.notificar_cliente
             SQL)->execute(['business'=>$businessId,'flow'=>(int)$flowId,'auto_advance'=>$data['auto_advance']?'true':'false','allow_skip'=>$data['allow_skip']?'true':'false','notify_client'=>$data['notify_client']?'true':'false']);
             $pdo->prepare("INSERT INTO sistema_autenticacao_eventos(id_usuario,id_estabelecimento,evento,metadata,created_at) VALUES(:user_a,:business_a,'cadastro_complementado','{}'::jsonb,NOW()),(:user_b,:business_b,'primeiro_acesso','{}'::jsonb,NOW())")->execute(['user_a'=>$userId,'business_a'=>$businessId,'user_b'=>$userId,'business_b'=>$businessId]);
-            $pdo->prepare("INSERT INTO cadastro_funil_eventos(cadastro_id,evento,etapa,metadata,created_at) SELECT id,'primeiro_acesso',3,'{}'::jsonb,NOW() FROM cadastro_temporarios WHERE id_usuario=:user ORDER BY id DESC LIMIT 1")->execute(['user'=>$userId]);
+            $pdo->prepare(<<<'SQL'
+                INSERT INTO sistema_usuarios_permissoes(id_usuario,id_estabelecimento,recurso,acao,permitido)
+                SELECT :user,:business,p.recurso,p.acao,TRUE
+                FROM(VALUES('establishments','read'),('clients','read'),('pets','read'),('schedules','read'),('attendances','read'),('vaccines','read'),('users','read'),('products','read'),('services','read'),('permissions','read'),('codebook','read'),('stock','read'),('stock','write'))p(recurso,acao)
+                ON CONFLICT(id_usuario,id_estabelecimento,recurso,acao)DO NOTHING
+            SQL)->execute(['user'=>$userId,'business'=>$businessId]);
+            $pdo->prepare("INSERT INTO onboarding_eventos(cadastro_id,evento,etapa,metadata,created_at) SELECT id,'primeiro_acesso',3,'{}'::jsonb,NOW() FROM onboarding_inscricoes WHERE id_usuario=:user ORDER BY id DESC LIMIT 1")->execute(['user'=>$userId]);
         });
     }
 
