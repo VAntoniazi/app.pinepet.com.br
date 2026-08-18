@@ -1,4 +1,5 @@
-.onboarding-shell{max-width:760px}
+.onboarding-shell{max-width:700px}
 .onboarding-head h1{font-size:clamp(1.45rem,6vw,2.25rem);line-height:1.08;letter-spacing:-.04em}
 .onboarding-head p{max-width:620px;margin-top:.45rem;font-size:.88rem;line-height:1.5}
-.onboarding-form fieldset{padding:.9rem;border-radius:14px}
+.onboarding-form fieldset{padding:.8rem;border-radius:12px}
+.onboarding-form legend{font-size:.86rem}.field-grid{gap:.75rem}.field-grid label{font-size:.76rem}.field-grid input,.field-grid select{min-height:44px;padding:.62rem .7rem}.choice-grid,.payment-grid{gap:.5rem}.choice-grid label,.payment-grid label{min-height:44px;padding:.7rem}.onboarding-actions .primary-button{min-height:46px}.step-pill{padding:.4rem .6rem;font-size:.66rem}
