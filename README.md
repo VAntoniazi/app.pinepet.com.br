@@ -266,6 +266,7 @@ Ordem:
 6. `005_onboarding_business_setup.sql`: processo em etapas, dados oficiais de CNPJ, responsavel tecnico, fiscal, catalogo de pagamentos e horarios.
 7. `006_integration_configuration.sql`: credenciais de integracoes cifradas no banco, ambiente/provedor controlados e versionamento de configuracao.
 8. `007_onboarding_data_import.sql`: trabalhos e lotes idempotentes da migracao assistida de clientes, pets, produtos e servicos.
+9. `008_pet_classification_catalogs.sql`: catálogos padronizados de espécies, raças e portes, relacionados aos pets e usados na importação do primeiro acesso.
 
 O onboarding e a movimentacao de estoque sao transacionais: qualquer falha desfaz a operacao inteira. Migrations devem rodar uma unica vez por release, com backup testado antes de producao.
 

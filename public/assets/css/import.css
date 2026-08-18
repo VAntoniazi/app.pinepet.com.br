@@ -20,6 +20,7 @@
 .import-sheet thead th span{display:block;max-width:160px;margin-bottom:.35rem;overflow:hidden;text-overflow:ellipsis;font-weight:800}
 .import-sheet select{width:100%;min-height:30px;padding:.2rem;border:1px solid #b8c8bc;border-radius:4px;background:#fff;font-size:.68rem}
 .import-sheet td{max-width:220px;overflow:hidden;background:#fff;outline:none}
+.import-sheet td.sheet-controlled{padding:.2rem;background:#f8fbf9}.import-sheet td.sheet-controlled select{width:100%;min-height:28px;border:0;background:transparent;font-size:.7rem;outline:none}.import-sheet td.sheet-controlled:focus-within{box-shadow:inset 0 0 0 2px var(--brand)}
 .import-sheet td:focus{position:relative;z-index:1;box-shadow:inset 0 0 0 2px var(--brand);background:#f4fbf5}
 .import-sheet .sheet-row-number{left:0;min-width:42px;width:42px;background:#f3f5f4;color:#66736b;text-align:center}
 .import-sheet tbody .sheet-row-number{position:sticky;z-index:1}
