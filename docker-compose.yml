@@ -14,7 +14,7 @@ services:
       dockerfile: docker/nginx/Dockerfile
     restart: unless-stopped
     depends_on: [php]
-    ports: ["127.0.0.1:8081:80"]
+    expose: ["80"]
     security_opt: [no-new-privileges:true]
     networks: [pinepet_app_private]
 volumes: {app_logs: {}, app_private: {}}
