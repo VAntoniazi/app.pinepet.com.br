@@ -7,6 +7,7 @@ services:
     tmpfs: [/tmp]
     volumes: [app_logs:/var/www/html/storage/logs, app_private:/var/www/html/storage/private]
     security_opt: [no-new-privileges:true]
+    networks: [pinepet_app_private]
   nginx:
     build:
       context: .
@@ -15,4 +16,14 @@ services:
     depends_on: [php]
     ports: ["127.0.0.1:8081:80"]
     security_opt: [no-new-privileges:true]
+    networks: [pinepet_app_private]
 volumes: {app_logs: {}, app_private: {}}
+networks:
+  pinepet_app_private:
+    name: pinepet_app_private
+    driver: bridge
+    attachable: false
+    internal: false
+    labels:
+      com.pinepet.scope: app
+      com.pinepet.access: private
