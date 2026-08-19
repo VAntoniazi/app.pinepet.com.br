@@ -3,7 +3,7 @@
 .sidebar-brand:after{content:"";position:absolute;right:12%;bottom:0;left:12%;height:2px;border-radius:2px;background:var(--brand-2,#6cbc2c)}
 .sidebar-brand img{width:40px;height:40px;flex:0 0 40px}
 .sidebar nav{padding-top:.7rem;gap:.2rem}
-.sidebar nav a,.sidebar nav>span{display:flex;align-items:center;min-height:34px;padding:.3rem .55rem;line-height:1.15}
+.sidebar nav a,.sidebar nav>span{display:flex;align-items:center;justify-content:flex-start;min-height:34px;padding:.3rem .55rem;line-height:1.15}
 .sidebar nav i{display:grid;place-items:center;width:29px;height:29px;flex:0 0 29px;margin-right:.55rem;border-radius:7px;background:#edf6ef;color:var(--brand,#035519);font-size:1rem;font-style:normal;font-weight:800;line-height:1}
 .sidebar nav a>span,.sidebar nav>span>span{display:flex;align-items:center;gap:.35rem;min-width:0;font-size:.78rem}
 .sidebar nav small{font-size:.52rem;line-height:1}
@@ -32,6 +32,7 @@
 .sidebar nav>span:nth-child(8)>span:before{content:"Equipe"}
 .sidebar nav>span:nth-child(9)>span:before{content:"Relatórios"}
 .sidebar nav>a:last-child>span:before{content:"Configurações"}
+.sidebar nav>span:nth-child(n+2)>span:before,.sidebar nav>a:last-child>span:before{display:inline-block;font-size:.78rem;line-height:1.15}
 .settings-page{width:100%;max-width:980px;margin-inline:auto}
 .settings-form{width:100%;box-sizing:border-box;overflow:visible}
 .settings-tabs{display:flex;align-items:stretch;gap:0;overflow:hidden;white-space:nowrap;scrollbar-width:none}
@@ -42,7 +43,7 @@
 .settings-grid label{min-width:0}
 .settings-grid input,.settings-grid select,.settings-grid textarea{width:100%;box-sizing:border-box}
 .settings-hours{width:100%;box-sizing:border-box;overflow:hidden}
-.settings-hour{display:grid;grid-template-columns:minmax(125px,1.35fr) minmax(95px,.85fr) minmax(105px,1fr) minmax(105px,1fr);align-items:center;gap:.6rem;width:100%;box-sizing:border-box}
+.settings-hour{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:center;gap:.6rem;width:100%;box-sizing:border-box}
 .settings-hour strong,.settings-hour label{min-width:0;margin:0;align-self:center}
 .settings-hour strong{font-size:.74rem;line-height:1.2}
 .settings-hour label{font-size:.64rem}
@@ -56,6 +57,10 @@
   .settings-tabs button{padding-inline:.65rem;font-size:.7rem}
   .settings-hour{grid-template-columns:1fr 1fr;gap:.45rem;padding-inline:.65rem}
   .settings-hour strong,.settings-hour .inline-check{grid-column:1/-1}
+}
+@media (min-width:700px) and (max-width:899px){
+  .settings-hour{grid-template-columns:1.2fr 1fr 1fr}
+  .settings-hour .inline-check{grid-column:1/-1}
 }
 @media (min-width:960px){
   .workspace-body.sidebar-collapsed .sidebar-brand span{display:none}
