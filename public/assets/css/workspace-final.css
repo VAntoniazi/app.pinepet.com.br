@@ -1,13 +1,13 @@
 /* Ajustes finais de legibilidade, alinhamento e responsividade */
 .sidebar-brand{position:relative;display:flex;align-items:center;justify-content:center;gap:.55rem;min-height:72px;padding:.75rem .5rem;border:0;background:transparent;cursor:pointer}
-.sidebar-brand:after{content:"";position:absolute;right:12%;bottom:0;left:12%;height:2px;border-radius:2px;background:var(--brand-2,#6cbc2c)}
+.sidebar-brand:after{content:"";position:absolute;right:12%;bottom:0;left:12%;height:1px;border-radius:1px;background:var(--brand-2,#6cbc2c)}
 .sidebar-brand img{width:40px;height:40px;flex:0 0 40px}
 .sidebar nav{padding-top:.7rem;gap:.2rem}
 .sidebar nav a,.sidebar nav>span{display:flex;align-items:center;justify-content:flex-start;min-height:34px;padding:.3rem .55rem;line-height:1.15}
-.sidebar nav i{display:grid;place-items:center;width:29px;height:29px;flex:0 0 29px;margin-right:.55rem;border-radius:7px;background:#edf6ef;color:var(--brand,#035519);font-size:1rem;font-style:normal;font-weight:800;line-height:1}
+.sidebar nav i{display:grid;place-items:center;width:33px;height:33px;flex:0 0 33px;margin-right:.6rem;border-radius:8px;background:#e5f3e8;color:var(--brand,#035519);font-size:1.08rem;font-style:normal;font-weight:900;line-height:1}
 .sidebar nav a>span,.sidebar nav>span>span{display:flex;align-items:center;gap:.35rem;min-width:0;font-size:.78rem}
 .sidebar nav small{font-size:.52rem;line-height:1}
-.sidebar-user{border-top:2px solid var(--brand-2,#6cbc2c);padding-top:.75rem}
+.sidebar-user{border-top:1px solid var(--brand-2,#6cbc2c);padding-top:.75rem}
 .sidebar-user .user-initials{display:grid;place-items:center;width:34px;height:34px;margin:0 auto .35rem;border-radius:50%;font-size:.72rem}
 /* Títulos de página compactos para preservar espaço útil no conteúdo */
 .page-heading{margin-bottom:.9rem;gap:.65rem}
@@ -16,7 +16,7 @@
 /* Ícones e rótulos legíveis mesmo em documentos antigos com codificação inconsistente */
 .sidebar nav i{font-size:0}
 .sidebar nav i:before{font-size:1rem;line-height:1}
-.sidebar nav i{font-size:0;background-color:var(--brand,#035519);background-repeat:no-repeat;background-position:center;background-size:17px 17px;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;-webkit-mask-size:17px 17px;mask-repeat:no-repeat;mask-position:center;mask-size:17px 17px}
+.sidebar nav i{font-size:0;background-color:var(--brand,#035519);background-repeat:no-repeat;background-position:center;background-size:20px 20px;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;-webkit-mask-size:20px 20px;mask-repeat:no-repeat;mask-position:center;mask-size:20px 20px}
 .sidebar nav i:before{display:none}
 .sidebar nav>a:first-child i{ -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M3 10.8 12 3l9 7.8v9.7a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 20.5zM9 22v-6h6v6'/%3E%3C/svg%3E");mask-image:var(--icon-mask)}
 .sidebar nav>span:nth-child(2) i{--icon-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M5 4h14v16H5zM8 2v4m8-4v4M5 9h14'/%3E%3C/svg%3E");-webkit-mask-image:var(--icon-mask);mask-image:var(--icon-mask)}
@@ -84,3 +84,14 @@
 }
 .remember-option{display:flex!important;align-items:center;gap:.5rem;font-size:.74rem!important;font-weight:700!important;color:var(--muted)}
 .remember-option input{width:16px!important;min-height:16px!important;accent-color:var(--brand)}
+.auth-recovery-link{display:block;margin-top:.85rem;color:var(--brand);font-size:.78rem;font-weight:800;text-align:center;text-decoration:none}
+.auth-recovery-link:hover{text-decoration:underline;text-underline-offset:3px}
+.auth-card a[href="/recuperar-senha"]{display:block;margin-top:.85rem;color:var(--brand);font-size:.78rem;font-weight:800;text-align:center;text-decoration:none}
+.auth-card a[href="/recuperar-senha"]:hover{text-decoration:underline;text-underline-offset:3px}
+.auth-card .primary-button{background:var(--brand);box-shadow:0 5px 12px rgba(3,85,25,.16)}
+.inline-recovery{margin-top:1.35rem;padding-top:1.1rem;border-top:1px solid var(--line)}
+.inline-recovery h3{margin:0;font-size:1.05rem;letter-spacing:-.02em}
+.inline-recovery p{margin:.35rem 0;color:var(--muted);font-size:.78rem;line-height:1.45}
+.inline-recovery .form-stack{margin-top:1rem}
+.inline-recovery .primary-button{width:100%}
+.inline-recovery-back{display:block;margin:.8rem auto 0;border:0;background:transparent;color:var(--brand);font-size:.76rem;font-weight:800;cursor:pointer}
