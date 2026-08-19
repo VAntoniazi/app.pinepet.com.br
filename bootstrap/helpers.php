@@ -24,7 +24,7 @@ function asset(string $path): string
 }
 function inline_asset(string $relativePath): string
 {
-    $allowed = ['assets/css/app.css', 'assets/css/onboarding.css', 'assets/css/onboarding-responsive.css', 'assets/css/onboarding-compact.css', 'assets/css/import.css', 'assets/css/workspace.css', 'assets/js/app.js', 'assets/js/import.js'];
+    $allowed = ['assets/css/app.css', 'assets/css/onboarding.css', 'assets/css/onboarding-responsive.css', 'assets/css/onboarding-compact.css', 'assets/css/import.css', 'assets/css/workspace.css', 'assets/css/workspace-overrides.css', 'assets/js/app.js', 'assets/js/import.js'];
     $relativePath = ltrim(str_replace('\\', '/', $relativePath), '/');
     if (!in_array($relativePath, $allowed, true)) throw new InvalidArgumentException('Asset inline não permitido.');
     $contents = file_get_contents(BASE_PATH . '/public/' . $relativePath);

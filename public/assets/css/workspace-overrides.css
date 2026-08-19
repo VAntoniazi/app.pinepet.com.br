@@ -1,0 +1,2 @@
+.mobile-sidebar-toggle{position:fixed;top:.75rem;left:.75rem;right:auto;width:42px;height:42px;border-radius:10px}
+@media(min-width:960px){.sidebar .sidebar-toggle{display:grid!important}.mobile-sidebar-toggle{display:none!important}}
