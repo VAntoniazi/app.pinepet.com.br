@@ -13,7 +13,15 @@ use App\Services\SessionService;
 final class AuthController
 {
     public function __construct(private readonly AuthRepository $users,private readonly SessionService$sessions) {}
-    public function showLogin(): string { if(Auth::user()) Response::redirect('/painel',302); return View::render('auth/login',['title'=>'Entrar | PinePet','error'=>pull_flash('error'),'email'=>pull_flash('email','')]); }
+    public function showLogin(): string { if(Auth::user()) Response::redirect('/painel',302); return View::render('auth/login',['title'=>'Entrar | PinePet','error'=>pull_flash('error'),'email'=>pull_flash('email', (string)($_COOKIE['pinepet_email']??''))]); }
+    public function showRecovery(): string { if(Auth::user()) Response::redirect('/painel',302); return View::render('auth/recover',['title'=>'Acesso por e-mail | PinePet','error'=>pull_flash('error'),'success'=>pull_flash('success'),'email'=>pull_flash('email','')]); }
+    public function recovery(Request $request): never
+    {
+        if(!Csrf::validate($request->input('_token'))) Response::abort(419); $email=mb_strtolower(trim((string)$request->input('email'))); $user=filter_var($email,FILTER_VALIDATE_EMAIL)?$this->users->findByEmail($email):null;
+        if(is_array($user)){ $raw=rtrim(strtr(base64_encode(random_bytes(48)),'+/','-_'),'=');$this->users->createLoginToken((int)$user['id'],hash('sha256',$raw),date('Y-m-d H:i:sP',time()+900));$url=(string)env('APP_URL','https://app.pinepet.com.br').'/acesso-email?token='.rawurlencode($raw);$subject='Seu acesso ao PinePet';$body="Acesse sua conta por este link (válido por 15 minutos):\n\n$url\n\nSe você não solicitou, ignore esta mensagem.";if(function_exists('mail'))@mail($email,$subject,$body,'Content-Type: text/plain; charset=UTF-8'); }
+        flash('success','Se o e-mail estiver cadastrado, enviaremos um link de acesso válido por 15 minutos.'); Response::redirect('/recuperar-senha');
+    }
+    public function emailLogin(Request $request): never { $token=trim((string)($_GET['token']??''));$user=preg_match('/^[A-Za-z0-9_-]{40,100}$/',$token)?$this->users->consumeLoginToken(hash('sha256',$token)):null;if(!$user){flash('error','Este link é inválido, expirou ou já foi utilizado.');Response::redirect('/entrar');}Csrf::rotate();Auth::login($user);$this->sessions->register($user,$request);Response::redirect(empty($user['cadastro_completo_em'])?'/primeiro-acesso':'/dashboard'); }
     public function login(Request $request): never
     {
         if(!Csrf::validate($request->input('_token'))) Response::abort(419);
@@ -25,7 +33,7 @@ final class AuthController
         $this->users->recordAttempt($emailHash,$ipHash,$valid,$request->userAgent());
         if(!$valid){ password_verify($password,'$2y$12$WkEoP3QdGrjH7A4WmDhkuOHsxP6NuBlmfJj39mF1rkWBwzZzP8zbu'); flash('error','E-mail ou senha inválidos.'); flash('email',$email); Response::redirect('/entrar'); }
         if(password_needs_rehash($user['senha'],PASSWORD_DEFAULT)){ $user['senha']=password_hash($password,PASSWORD_DEFAULT);$this->users->updatePasswordHash((int)$user['id'],$user['senha']); }
-        Csrf::rotate(); Auth::login($user);$this->sessions->register($user,$request);Response::redirect(empty($user['cadastro_completo_em'])?'/primeiro-acesso':'/painel');
+        if($request->input('remember_email')==='1')setcookie('pinepet_email',$email,['expires'=>time()+31536000,'path'=>'/','secure'=>true,'httponly'=>true,'samesite'=>'Strict']);else setcookie('pinepet_email','',['expires'=>time()-3600,'path'=>'/','secure'=>true,'httponly'=>true,'samesite'=>'Strict']);Csrf::rotate(); Auth::login($user);$this->sessions->register($user,$request);Response::redirect(empty($user['cadastro_completo_em'])?'/primeiro-acesso':'/painel');
     }
     public function logout(Request $request): never { if(!Csrf::validate($request->input('_token'))) Response::abort(419);$this->sessions->revokeCurrent();Auth::logout();Response::redirect('/entrar'); }
     public function showActivation(Request $request): string { if(Auth::user()) Response::redirect('/painel',302); return View::render('auth/activate',['title'=>'Definir senha | PinePet','token'=>trim((string)($_GET['token']??'')),'error'=>pull_flash('error')]); }

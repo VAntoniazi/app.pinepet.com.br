@@ -27,6 +27,14 @@ final class AuthRepository
     {
         $this->database->pdo()->prepare('UPDATE acesso_usuarios SET senha=:password,updated_at=NOW(),version_lock=version_lock+1 WHERE id=:id AND deleted_at IS NULL')->execute(['password'=>$passwordHash,'id'=>$userId]);
     }
+    public function createLoginToken(int $userId,string $hash,string $expires): void
+    {
+        $this->database->pdo()->prepare('INSERT INTO acesso_tokens_login(id_usuario,token_hash,finalidade,expira_em) VALUES(:user,:hash,:purpose,:expires)')->execute(['user'=>$userId,'hash'=>$hash,'purpose'=>'login','expires'=>$expires]);
+    }
+    public function consumeLoginToken(string $hash): ?array
+    {
+        return $this->database->transaction(function(PDO $pdo) use($hash): ?array { $s=$pdo->prepare("SELECT t.id,u.id,u.public_id,u.id_estabelecimento,u.nome_completo,u.email,u.senha,u.cadastro_completo_em FROM acesso_tokens_login t JOIN acesso_usuarios u ON u.id=t.id_usuario WHERE t.token_hash=:hash AND t.finalidade='login' AND t.usado_em IS NULL AND t.expira_em>NOW() AND u.status='ativo' AND u.deleted_at IS NULL FOR UPDATE");$s->execute(['hash'=>$hash]);$user=$s->fetch();if(!is_array($user))return null;$pdo->prepare('UPDATE acesso_tokens_login SET usado_em=NOW() WHERE id=:id')->execute(['id'=>$user['id']]);return $user; });
+    }
     public function activate(string $tokenHash,string $passwordHash): ?array
     {
         return $this->database->transaction(function(PDO $pdo) use($tokenHash,$passwordHash): ?array {
