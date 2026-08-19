@@ -1,0 +1,63 @@
+/* Ajustes finais de legibilidade, alinhamento e responsividade */
+.sidebar-brand{position:relative;display:flex;align-items:center;justify-content:center;gap:.55rem;min-height:72px;padding:.75rem .5rem;border:0;background:transparent;cursor:pointer}
+.sidebar-brand:after{content:"";position:absolute;right:12%;bottom:0;left:12%;height:2px;border-radius:2px;background:var(--brand-2,#6cbc2c)}
+.sidebar-brand img{width:40px;height:40px;flex:0 0 40px}
+.sidebar nav{padding-top:.7rem;gap:.2rem}
+.sidebar nav a,.sidebar nav>span{display:flex;align-items:center;min-height:34px;padding:.3rem .55rem;line-height:1.15}
+.sidebar nav i{display:grid;place-items:center;width:29px;height:29px;flex:0 0 29px;margin-right:.55rem;border-radius:7px;background:#edf6ef;color:var(--brand,#035519);font-size:1rem;font-style:normal;font-weight:800;line-height:1}
+.sidebar nav a>span,.sidebar nav>span>span{display:flex;align-items:center;gap:.35rem;min-width:0;font-size:.78rem}
+.sidebar nav small{font-size:.52rem;line-height:1}
+.sidebar-user{border-top:2px solid var(--brand-2,#6cbc2c);padding-top:.75rem}
+.sidebar-user .user-initials{display:grid;place-items:center;width:34px;height:34px;margin:0 auto .35rem;border-radius:50%;font-size:.72rem}
+/* Ícones e rótulos legíveis mesmo em documentos antigos com codificação inconsistente */
+.sidebar nav i{font-size:0}
+.sidebar nav i:before{font-size:1rem;line-height:1}
+.sidebar nav>a:first-child i:before{content:"\2302"}
+.sidebar nav>span:nth-child(2) i:before{content:"\25A3"}
+.sidebar nav>span:nth-child(3) i:before{content:"\2667"}
+.sidebar nav>span:nth-child(4) i:before{content:"\25C9"}
+.sidebar nav>span:nth-child(5) i:before{content:"\25A4"}
+.sidebar nav>span:nth-child(6) i:before{content:"\2726"}
+.sidebar nav>span:nth-child(7) i:before{content:"$"}
+.sidebar nav>span:nth-child(8) i:before{content:"\2659"}
+.sidebar nav>span:nth-child(9) i:before{content:"\25A5"}
+.sidebar nav>a:last-child i:before{content:"\2699"}
+.sidebar nav>span:nth-child(n+2)>span,.sidebar nav>a:last-child>span{font-size:0}
+.sidebar nav>span:nth-child(2)>span:before{content:"Agenda"}
+.sidebar nav>span:nth-child(3)>span:before{content:"Clientes e pets"}
+.sidebar nav>span:nth-child(4)>span:before{content:"Atendimentos"}
+.sidebar nav>span:nth-child(5)>span:before{content:"Produtos e estoque"}
+.sidebar nav>span:nth-child(6)>span:before{content:"Serviços"}
+.sidebar nav>span:nth-child(7)>span:before{content:"Financeiro"}
+.sidebar nav>span:nth-child(8)>span:before{content:"Equipe"}
+.sidebar nav>span:nth-child(9)>span:before{content:"Relatórios"}
+.sidebar nav>a:last-child>span:before{content:"Configurações"}
+.settings-page{width:100%;max-width:980px;margin-inline:auto}
+.settings-form{width:100%;box-sizing:border-box;overflow:visible}
+.settings-tabs{display:flex;align-items:stretch;gap:0;overflow:hidden;white-space:nowrap;scrollbar-width:none}
+.settings-tabs::-webkit-scrollbar{display:none;width:0;height:0}
+.settings-tabs button{flex:1 1 0;min-width:max-content;text-align:center}
+.settings-form fieldset{width:100%;box-sizing:border-box}
+.settings-grid{width:100%;align-items:start}
+.settings-grid label{min-width:0}
+.settings-grid input,.settings-grid select,.settings-grid textarea{width:100%;box-sizing:border-box}
+.settings-hours{width:100%;box-sizing:border-box;overflow:hidden}
+.settings-hour{display:grid;grid-template-columns:minmax(125px,1.35fr) minmax(95px,.85fr) minmax(105px,1fr) minmax(105px,1fr);align-items:center;gap:.6rem;width:100%;box-sizing:border-box}
+.settings-hour strong,.settings-hour label{min-width:0;margin:0;align-self:center}
+.settings-hour strong{font-size:.74rem;line-height:1.2}
+.settings-hour label{font-size:.64rem}
+.settings-hour input[type=time]{width:100%;min-height:34px;box-sizing:border-box;font-size:.72rem}
+.settings-hour .inline-check{display:flex;align-items:center;gap:.35rem;white-space:nowrap}
+.settings-save{display:flex;align-items:center;justify-content:flex-end;gap:.75rem}
+@media (max-width:699px){
+  .settings-page{max-width:none}
+  .settings-form{padding-inline:.85rem}
+  .settings-tabs{margin-inline:-.85rem;padding-inline:.5rem}
+  .settings-tabs button{padding-inline:.65rem;font-size:.7rem}
+  .settings-hour{grid-template-columns:1fr 1fr;gap:.45rem;padding-inline:.65rem}
+  .settings-hour strong,.settings-hour .inline-check{grid-column:1/-1}
+}
+@media (min-width:960px){
+  .workspace-body.sidebar-collapsed .sidebar-brand span{display:none}
+  .workspace-body.sidebar-collapsed .sidebar-brand:after{right:20%;left:20%}
+}
