@@ -268,6 +268,7 @@ Ordem:
 8. `007_onboarding_data_import.sql`: trabalhos e lotes idempotentes da migracao assistida de clientes, pets, produtos e servicos.
 9. `008_pet_classification_catalogs.sql`: catálogos padronizados de espécies, raças e portes, relacionados aos pets e usados na importação do primeiro acesso.
 10. `009_client_profile_catalogs.sql`: data de nascimento e catálogo controlado de sexo para clientes, usados na importação do primeiro acesso.
+11. `010_numeric_document_integrity.sql`: CPF somente numérico, CNPJ alfanumérico canônico, saneamento transacional e validação dos dígitos verificadores.
 
 O onboarding e a movimentacao de estoque sao transacionais: qualquer falha desfaz a operacao inteira. Migrations devem rodar uma unica vez por release, com backup testado antes de producao.
 

@@ -991,7 +991,7 @@ CREATE TABLE IF NOT EXISTS organizacao_dados_receita(
  CHECK(cnpj~'^[A-Z0-9]{12}[0-9]{2}$'),CHECK(uf IS NULL OR uf~'^[A-Z]{2}$')
 );
 
-ALTER TABLE organizacao_estabelecimentos ALTER COLUMN cnpj TYPE varchar(14) USING upper(regexp_replace(cnpj::text,'[^A-Za-z0-9]','','g'));
+ALTER TABLE organizacao_estabelecimentos ALTER COLUMN cnpj TYPE varchar(14) USING NULLIF(upper(regexp_replace(cnpj::text,'[^A-Za-z0-9]','','g')),'');
 DO $$DECLARE constraint_name text;BEGIN FOR constraint_name IN SELECT conname FROM pg_constraint WHERE conrelid='organizacao_estabelecimentos'::regclass AND contype='c' AND pg_get_constraintdef(oid) ILIKE '%cnpj%' LOOP EXECUTE format('ALTER TABLE organizacao_estabelecimentos DROP CONSTRAINT %I',constraint_name);END LOOP;END$$;
 ALTER TABLE organizacao_estabelecimentos ADD CONSTRAINT ck_estabelecimentos_cnpj_formato CHECK(cnpj IS NULL OR cnpj~'^[A-Z0-9]{12}[0-9]{2}$');
 

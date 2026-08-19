@@ -14,10 +14,10 @@ CREATE TABLE IF NOT EXISTS organizacao_dados_receita(
  data_abertura date,cnae_principal_codigo varchar(12),cnae_principal_descricao varchar(255),cep varchar(8),logradouro varchar(255),numero varchar(30),
  complemento varchar(180),bairro varchar(120),municipio varchar(120),uf char(2),email varchar(254),telefone varchar(30),fonte varchar(30) NOT NULL DEFAULT 'SERPRO',
  consultado_em timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,resposta_hash char(64) NOT NULL,criado_em timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,atualizado_em timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
- CHECK(cnpj~'^[A-Z0-9]{12}[0-9]{2}$'),CHECK(uf IS NULL OR uf~'^[A-Z]{2}$')
+  CHECK(cnpj~'^[A-Z0-9]{12}[0-9]{2}$'),CHECK(uf IS NULL OR uf~'^[A-Z]{2}$')
 );
 
-ALTER TABLE organizacao_estabelecimentos ALTER COLUMN cnpj TYPE varchar(14) USING upper(regexp_replace(cnpj::text,'[^A-Za-z0-9]','','g'));
+ALTER TABLE organizacao_estabelecimentos ALTER COLUMN cnpj TYPE varchar(14) USING NULLIF(upper(regexp_replace(cnpj::text,'[^A-Za-z0-9]','','g')),'');
 DO $$DECLARE constraint_name text;BEGIN FOR constraint_name IN SELECT conname FROM pg_constraint WHERE conrelid='organizacao_estabelecimentos'::regclass AND contype='c' AND pg_get_constraintdef(oid) ILIKE '%cnpj%' LOOP EXECUTE format('ALTER TABLE organizacao_estabelecimentos DROP CONSTRAINT %I',constraint_name);END LOOP;END$$;
 ALTER TABLE organizacao_estabelecimentos ADD CONSTRAINT ck_estabelecimentos_cnpj_formato CHECK(cnpj IS NULL OR cnpj~'^[A-Z0-9]{12}[0-9]{2}$');
 

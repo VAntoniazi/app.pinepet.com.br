@@ -15,9 +15,9 @@ final class OnboardingImportService
     {
         foreach($this->fields($type)as$field=>$_)$r[$field]=$r[$field]??'';
         $r['nome']=$this->clean($r['nome'],180);if($r['nome']==='')throw new \RuntimeException('Nome obrigatorio.');
-        if(array_key_exists('cpf',$r)){$r['cpf']=$this->digits($r['cpf']);if($r['cpf']!==''&&strlen($r['cpf'])!==11)throw new \RuntimeException('CPF invalido.');}
+        if(array_key_exists('cpf',$r)){$r['cpf']=$this->digits($r['cpf']);if($r['cpf']!==''&&!$this->validDocument($r['cpf'],11))throw new \RuntimeException('CPF inválido.');}
         foreach(['email','tutor_email']as$f)if(isset($r[$f])&&$r[$f]!==''&&!filter_var($r[$f],FILTER_VALIDATE_EMAIL))throw new \RuntimeException('E-mail invalido.');
-        foreach(['whatsapp','tutor_whatsapp','tutor_cpf']as$f)if(isset($r[$f]))$r[$f]=$this->digits($r[$f]);
+        foreach(['whatsapp','tutor_whatsapp','tutor_cpf']as$f)if(isset($r[$f]))$r[$f]=$this->digits($r[$f]);if(($r['tutor_cpf']??'')!==''&&!$this->validDocument($r['tutor_cpf'],11))throw new \RuntimeException('CPF do tutor inválido.');
         foreach(['preco','preco_venda']as$f)if(isset($r[$f])&&$r[$f]!==''){$r[$f]=$this->money($r[$f]);if($r[$f]<0)throw new \RuntimeException('Preco invalido.');}
         if(isset($r['duracao_minutos'])&&$r['duracao_minutos']!==''){$r['duracao_minutos']=(int)preg_replace('/\D/','',$r['duracao_minutos']);if($r['duracao_minutos']<1)throw new \RuntimeException('Duracao invalida.');}
         if(isset($r['data_nascimento'])&&$r['data_nascimento']!=='')$r['data_nascimento']=$this->birthDate($r['data_nascimento']);return$r;
@@ -35,4 +35,5 @@ final class OnboardingImportService
     private function service(PDO$p,int$b,array$r):void{$p->prepare('INSERT INTO catalogo_servicos(id_estabelecimento,nome,descricao,duracao_minutos,preco)VALUES(:b,:n,:d,:m,:v)')->execute(['b'=>$b,'n'=>$r['nome'],'d'=>$r['descricao']?:null,'m'=>$r['duracao_minutos']===''?null:$r['duracao_minutos'],'v'=>$r['preco']===''?null:$r['preco']]);}
     private function clean(mixed$v,int$max):string{return mb_substr(preg_replace('/[\x00-\x1F\x7F]/u',' ',trim(is_scalar($v)?(string)$v:'')),0,$max);}
     private function digits(string$v):string{return preg_replace('/\D/','',$v);}private function money(string$v):float{$v=preg_replace('/[^0-9,.-]/','',$v);if(str_contains($v,',')&&str_contains($v,'.'))$v=str_replace('.','',$v);$v=str_replace(',','.',$v);return is_numeric($v)?round((float)$v,2):-1;}
+    private function validDocument(string$v,int$length):bool{if(strlen($v)!==$length||preg_match('/^(\d)\1+$/',$v))return false;$base=$length===11?9:12;for($round=0;$round<2;$round++){$size=$base+$round;$sum=0;for($i=0;$i<$size;$i++){$weight=$length===11?($size+1-$i):(($size-1-$i)%8+2);$sum+=(int)$v[$i]*$weight;}$digit=$length===11?(($sum*10)%11)%10:(($sum%11)<2?0:11-($sum%11));if((int)$v[$size]!==$digit)return false;}return true;}
 }
