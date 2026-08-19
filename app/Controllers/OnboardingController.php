@@ -19,7 +19,7 @@ final class OnboardingController
     public function show():string
     {
         $user=Auth::requireUser();if(!empty($user['profile_complete']))Response::redirect('/painel',302);$profile=$this->profiles->data((int)$user['user_id']);if(!$profile)Response::abort(403);$state=$this->onboarding->state((int)$user['user_id'],(int)$user['business_id']);
-        return View::render('onboarding/index',['title'=>'Configure seu PinePet','profile'=>$profile,'businessId'=>(int)$user['business_id'],'step'=>(int)$state['etapa'],'data'=>$state['dados'],'methods'=>$this->onboarding->paymentMethods(),'petCatalogs'=>(int)$state['etapa']===6?$this->onboarding->petCatalogs():[],'error'=>pull_flash('error'),'old'=>pull_flash('old',[]),'certificateOfferUrl'=>'/certificado-digital/oferta']);
+        return View::render('onboarding/index',['title'=>'Configure seu PinePet','profile'=>$profile,'businessId'=>(int)$user['business_id'],'step'=>(int)$state['etapa'],'data'=>$state['dados'],'methods'=>$this->onboarding->paymentMethods(),'importCatalogs'=>(int)$state['etapa']===6?$this->onboarding->importCatalogs():[],'error'=>pull_flash('error'),'old'=>pull_flash('old',[]),'certificateOfferUrl'=>'/certificado-digital/oferta']);
     }
     public function certificateOffer():string{Auth::requireUser();return View::render('onboarding/certificate-offer',['title'=>'Certificado digital | PinePet']);}
     public function store(Request$request):never
