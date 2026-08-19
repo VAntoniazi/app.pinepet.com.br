@@ -34,16 +34,25 @@ BEGIN
  RETURN TRUE;
 END$$;
 
+CREATE TABLE IF NOT EXISTS sistema_documentos_saneamento(
+ id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,tabela varchar(80)NOT NULL,registro_id varchar(80)NOT NULL,
+ documento varchar(10)NOT NULL,motivo varchar(120)NOT NULL,ocorrido_em timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 DO $$
 BEGIN
  IF EXISTS(SELECT 1 FROM acesso_usuarios WHERE cpf IS NOT NULL AND fn_cpf_valido(NULLIF(regexp_replace(cpf,'[^0-9]','','g'),''))IS NOT TRUE)THEN RAISE EXCEPTION 'Existem CPFs inválidos em acesso_usuarios; a migration foi cancelada sem alterar dados.';END IF;
- IF EXISTS(SELECT 1 FROM clientes WHERE cpf IS NOT NULL AND fn_cpf_valido(NULLIF(regexp_replace(cpf,'[^0-9]','','g'),''))IS NOT TRUE)THEN RAISE EXCEPTION 'Existem CPFs inválidos em clientes; a migration foi cancelada sem alterar dados.';END IF;
- IF EXISTS(SELECT 1 FROM equipe_profissionais WHERE cpf IS NOT NULL AND fn_cpf_valido(NULLIF(regexp_replace(cpf,'[^0-9]','','g'),''))IS NOT TRUE)THEN RAISE EXCEPTION 'Existem CPFs inválidos em equipe_profissionais; a migration foi cancelada sem alterar dados.';END IF;
  IF EXISTS(SELECT 1 FROM saude_responsaveis_tecnicos WHERE fn_cpf_valido(NULLIF(regexp_replace(cpf,'[^0-9]','','g'),''))IS NOT TRUE)THEN RAISE EXCEPTION 'Existem CPFs inválidos em saude_responsaveis_tecnicos; a migration foi cancelada sem alterar dados.';END IF;
  IF EXISTS(SELECT 1 FROM organizacao_estabelecimentos WHERE cnpj IS NOT NULL AND fn_cnpj_valido(NULLIF(upper(regexp_replace(cnpj,'[^A-Za-z0-9]','','g')),''))IS NOT TRUE)THEN RAISE EXCEPTION 'Existem CNPJs inválidos em organizacao_estabelecimentos; a migration foi cancelada sem alterar dados.';END IF;
  IF EXISTS(SELECT 1 FROM organizacao_dados_receita WHERE fn_cnpj_valido(NULLIF(upper(regexp_replace(cnpj,'[^A-Za-z0-9]','','g')),''))IS NOT TRUE)THEN RAISE EXCEPTION 'Existem CNPJs inválidos em organizacao_dados_receita; a migration foi cancelada sem alterar dados.';END IF;
 END$$;
 
+INSERT INTO sistema_documentos_saneamento(tabela,registro_id,documento,motivo)
+SELECT 'clientes',id::text,'CPF','CPF legado inválido removido; campo opcional' FROM clientes WHERE cpf IS NOT NULL AND fn_cpf_valido(NULLIF(regexp_replace(cpf,'[^0-9]','','g'),''))IS NOT TRUE;
+INSERT INTO sistema_documentos_saneamento(tabela,registro_id,documento,motivo)
+SELECT 'equipe_profissionais',id::text,'CPF','CPF legado inválido removido; campo opcional' FROM equipe_profissionais WHERE cpf IS NOT NULL AND fn_cpf_valido(NULLIF(regexp_replace(cpf,'[^0-9]','','g'),''))IS NOT TRUE;
+UPDATE clientes SET cpf=NULL WHERE cpf IS NOT NULL AND fn_cpf_valido(NULLIF(regexp_replace(cpf,'[^0-9]','','g'),''))IS NOT TRUE;
+UPDATE equipe_profissionais SET cpf=NULL WHERE cpf IS NOT NULL AND fn_cpf_valido(NULLIF(regexp_replace(cpf,'[^0-9]','','g'),''))IS NOT TRUE;
 UPDATE acesso_usuarios SET cpf=NULLIF(regexp_replace(cpf,'[^0-9]','','g'),'')WHERE cpf IS DISTINCT FROM NULLIF(regexp_replace(cpf,'[^0-9]','','g'),'');
 UPDATE clientes SET cpf=NULLIF(regexp_replace(cpf,'[^0-9]','','g'),'')WHERE cpf IS DISTINCT FROM NULLIF(regexp_replace(cpf,'[^0-9]','','g'),'');
 UPDATE equipe_profissionais SET cpf=NULLIF(regexp_replace(cpf,'[^0-9]','','g'),'')WHERE cpf IS DISTINCT FROM NULLIF(regexp_replace(cpf,'[^0-9]','','g'),'');

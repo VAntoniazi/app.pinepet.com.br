@@ -23,7 +23,7 @@ O schema canonico e sempre `pinepet`. O prefixo generico `cadastro_` foi removid
 - `equipe_*`: profissionais e detalhes de vinculo.
 - `catalogo_*`, `agenda_*`, `atendimento_*`, `estoque_*`, `financeiro_*`, `fiscal_*`, `gateway_*`, `marketing_*` e `sistema_*`: modulos especializados.
 
-As tabelas `blog_categorias`, `blog_autores` e `blog_posts` mantiveram nomes e comportamento. Para uma instalacao nova ou migracao integral, use somente `pinepet-completo-modular.sql`. A migration `000_modular_table_names.sql` existe para deploy incremental do app e deve executar antes das demais.
+As tabelas `blog_categorias`, `blog_autores` e `blog_posts` mantiveram nomes e comportamento. Para instalação nova ou reconciliação completa de uma base existente, execute somente `pinepet-completo-modular.sql`. O arquivo é autossuficiente, aplica toda a estrutura até a migration 010 e realiza uma auditoria final das dependências essenciais.
 
 ## Fluxos web
 
