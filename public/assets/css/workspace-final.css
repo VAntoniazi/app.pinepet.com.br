@@ -9,6 +9,10 @@
 .sidebar nav small{font-size:.52rem;line-height:1}
 .sidebar-user{border-top:2px solid var(--brand-2,#6cbc2c);padding-top:.75rem}
 .sidebar-user .user-initials{display:grid;place-items:center;width:34px;height:34px;margin:0 auto .35rem;border-radius:50%;font-size:.72rem}
+/* Títulos de página compactos para preservar espaço útil no conteúdo */
+.page-heading{margin-bottom:.9rem;gap:.65rem}
+.page-heading h1{font-size:clamp(1.2rem,2.4vw,1.7rem);line-height:1.15;letter-spacing:-.025em}
+.page-heading p{margin-top:.25rem;font-size:.78rem}
 /* Ícones e rótulos legíveis mesmo em documentos antigos com codificação inconsistente */
 .sidebar nav i{font-size:0}
 .sidebar nav i:before{font-size:1rem;line-height:1}
