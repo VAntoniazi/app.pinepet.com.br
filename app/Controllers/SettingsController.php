@@ -1,0 +1,18 @@
+<?php
+declare(strict_types=1);
+namespace App\Controllers;
+use App\Core\Auth;use App\Core\Csrf;use App\Core\Request;use App\Core\Response;use App\Core\View;use App\Repositories\SettingsRepository;
+final class SettingsController
+{
+    public function __construct(private readonly SettingsRepository$settings){}
+    public function index():string{$u=Auth::requireCompletedProfile();return View::render('settings/index',['title'=>'Configurações | PinePet','user'=>$u,'settings'=>$this->settings->data((int)$u['user_id'],(int)$u['business_id']),'methods'=>$this->settings->paymentMethods(),'success'=>pull_flash('success'),'error'=>pull_flash('error')]);}
+    public function save(Request$r):never
+    {
+        $u=Auth::requireCompletedProfile();if(!Csrf::validate($r->input('_token')))Response::abort(419);try{$d=$this->validate($r);$this->settings->save((int)$u['user_id'],(int)$u['business_id'],$d);Auth::completeProfile($d['name']);Csrf::rotate();flash('success','Configurações atualizadas com sucesso.');}catch(\Throwable$e){error_log('Settings: '.$e->getMessage());flash('error',$e instanceof \RuntimeException&&!$e instanceof \PDOException?$e->getMessage():'Não foi possível salvar as configurações.');}Response::redirect('/configuracoes');
+    }
+    private function validate(Request$r):array
+    {
+        $clean=static fn($v,$max)=>mb_substr(preg_replace('/\s+/u',' ',trim(is_scalar($v)?(string)$v:'')),0,$max);$digits=static fn($v)=>preg_replace('/\D/','',is_scalar($v)?(string)$v:'');$name=$clean($r->input('name'),240);$email=mb_strtolower($clean($r->input('email'),254));$phone=$digits($r->input('phone'));$trade=$clean($r->input('trade'),255);$cnpj=strtoupper(preg_replace('/[^A-Za-z0-9]/','',(string)$r->input('cnpj')));if(mb_strlen($name)<3||!filter_var($email,FILTER_VALIDATE_EMAIL)||mb_strlen($trade)<2)throw new \RuntimeException('Revise nome, e-mail e estabelecimento.');if($cnpj!==''&&!$this->validCnpj($cnpj))throw new \RuntimeException('Informe um CNPJ válido.');$vaccines=$r->input('vaccines')==='1';$rt=['name'=>$clean($r->input('rt_name'),240),'cpf'=>$digits($r->input('rt_cpf')),'number'=>$clean($r->input('rt_number'),40),'uf'=>strtoupper($clean($r->input('rt_uf'),2)),'validity'=>trim((string)$r->input('rt_validity'))?:null,'email'=>$clean($r->input('rt_email'),254)?:null,'phone'=>$digits($r->input('rt_phone'))?:null];if($vaccines&&($rt['name']===''||strlen($rt['cpf'])!==11||$rt['number']===''||preg_match('/^[A-Z]{2}$/',$rt['uf'])!==1))throw new \RuntimeException('Preencha os dados do responsável técnico.');$payments=$r->input('payments',[]);if(!is_array($payments)||$payments===[])throw new \RuntimeException('Selecione ao menos uma forma de pagamento.');$hours=[];for($day=0;$day<7;$day++){$closed=$r->input('closed_'.$day)==='1';$open=trim((string)$r->input('open_'.$day));$close=trim((string)$r->input('close_'.$day));if(!$closed&&(!preg_match('/^\d{2}:\d{2}$/',$open)||!preg_match('/^\d{2}:\d{2}$/',$close)||$close<=$open))throw new \RuntimeException('Revise os horários de funcionamento.');$hours[$day]=['closed'=>$closed,'open'=>$open,'close'=>$close];}return['name'=>$name,'email'=>$email,'phone'=>$phone,'trade'=>$trade,'cnpj'=>$cnpj,'vaccines'=>$vaccines,'rt'=>$rt,'invoice'=>$r->input('invoice')==='1','payments'=>array_values(array_unique(array_filter($payments,'is_string'))),'hours'=>$hours];
+    }
+    private function validCnpj(string$v):bool{if(preg_match('/^[A-Z0-9]{12}[0-9]{2}$/',$v)!==1)return false;$w=[[5,4,3,2,9,8,7,6,5,4,3,2],[6,5,4,3,2,9,8,7,6,5,4,3,2]];$b=substr($v,0,12);for($r=0;$r<2;$r++){$s=0;foreach(str_split($b)as$i=>$c)$s+=(ord($c)-48)*$w[$r][$i];$d=$s%11<2?0:11-$s%11;if((int)$v[12+$r]!==$d)return false;$b.=$d;}return true;}
+}

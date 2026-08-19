@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-$router->get('/',fn()=>App\Core\Response::redirect(App\Core\Auth::user()?'/painel':'/entrar',302));
+$router->get('/',fn()=>App\Core\Response::redirect(App\Core\Auth::user()?'/dashboard':'/entrar',302));
 $router->get('/entrar',[$auth,'showLogin']); $router->post('/entrar',[$auth,'login']); $router->post('/sair',[$auth,'logout']);
 $router->get('/definir-senha',[$auth,'showActivation']); $router->post('/definir-senha',[$auth,'activate']);
 $router->get('/primeiro-acesso',[$onboarding,'show']); $router->post('/primeiro-acesso',[$onboarding,'store']);
@@ -8,7 +8,9 @@ $router->get('/certificado-digital/oferta',[$onboarding,'certificateOffer']);
 $router->post('/api/v1/onboarding/importacoes/preparar',[$importController,'prepare']);
 $router->post('/api/v1/onboarding/importacoes/lote',[$importController,'batch']);
 $router->post('/api/v1/onboarding/importacoes/concluir',[$importController,'finish']);
-$router->get('/painel',[$dashboard,'index']);
+$router->get('/dashboard',[$dashboard,'index']);
+$router->get('/painel',fn()=>App\Core\Response::redirect('/dashboard',301));
+$router->get('/configuracoes',[$settings,'index']);$router->post('/configuracoes',[$settings,'save']);
 $router->get('/api/v1/estabelecimentos',[$api,'establishment']);
 $router->get('/api/v1/clientes',[$api,'clients']);
 $router->get('/api/v1/pets',[$api,'pets']);
