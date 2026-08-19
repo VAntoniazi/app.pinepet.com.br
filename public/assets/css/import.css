@@ -26,7 +26,7 @@
 .import-sheet tbody .sheet-row-number{position:sticky;z-index:1}
 .sheet-note{margin:.45rem 0 0;color:var(--muted);font-size:.65rem}
 .import-result{min-height:1.1rem;margin-top:.65rem;color:var(--brand);font-size:.73rem;font-weight:750;overflow-wrap:anywhere}
-.import-loading{position:absolute;z-index:20;inset:0;display:grid;place-content:center;justify-items:center;gap:.55rem;padding:1rem;background:rgba(255,255,255,.94);text-align:center}
+.import-loading{position:fixed;z-index:1000;inset:0;display:grid;place-content:center;justify-items:center;gap:.55rem;padding:1rem;background:rgba(246,250,247,.96);text-align:center}
 .import-loading[hidden]{display:none}
 .import-loading strong{font-size:.9rem}.import-loading span{color:var(--muted);font-size:.72rem}
 .import-loading progress{width:min(260px,70vw);height:10px;accent-color:var(--brand)}
